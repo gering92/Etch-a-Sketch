@@ -1,9 +1,15 @@
+const buttonContainer = document.createElement("div");
+buttonContainer.classList.add("buttonContainer");
 const resizeBtn = document.createElement("button");
 const multiColor = document.createElement("button");
+const reset = document.createElement("button");
 resizeBtn.textContent = "Resize Grid"
 multiColor.textContent = "Enable Multi-Color"
-document.body.appendChild(resizeBtn);
-document.body.appendChild(multiColor);
+reset.textContent = "Reset"
+buttonContainer.appendChild(resizeBtn);
+buttonContainer.appendChild(multiColor);
+buttonContainer.appendChild(reset);
+document.body.appendChild(buttonContainer);
 
 let randColor = false;
 
@@ -55,15 +61,26 @@ function createGrid(rows, cols) {
 function cellEventListener() {
     const cells = document.querySelectorAll(".cell");
 
+    let isClicking = false;
+
     cells.forEach(cell => {
         cell.addEventListener("mouseover", () => {
-            if (randColor) {
-                const randomColor = '#' + Math.floor(Math.random() * 16777215).toString(16);
-                cell.style.backgroundColor = randomColor;
-            } else {
-                cell.style.backgroundColor = "black";
+            if (isDrawing) {
+                if (randColor) {
+                    const randomColor = '#' + Math.floor(Math.random() * 16777215).toString(16);
+                    cell.style.backgroundColor = randomColor;
+                } else {
+                    cell.style.backgroundColor = "black";
+                }
             }
-            
+        });
+
+        cell.addEventListener("mousedown", function() {
+            isDrawing = true;
+        })
+
+        cell.addEventListener("mouseup", function() {
+            isDrawing = false;
         })
     })
 }
@@ -86,6 +103,11 @@ resizeBtn.addEventListener("click", function() {
     } else if (gridSize > 100) {
         alert("Please give a valid input! Grid size must be less than or equal to 100.")
     }
+})
+
+reset.addEventListener("click", function() {
+    clearGrid();
+    createGrid(gridSize, gridSize);
 })
 
 multiColor.addEventListener("click", function() {
